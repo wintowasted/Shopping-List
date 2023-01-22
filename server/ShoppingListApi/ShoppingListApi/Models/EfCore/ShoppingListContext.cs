@@ -25,6 +25,7 @@ public partial class ShoppingListContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
 
@@ -84,6 +85,7 @@ public partial class ShoppingListContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.UserName).HasMaxLength(50);
             entity.Property(e => e.UserRole).HasMaxLength(50);
+            
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -1,5 +1,4 @@
 ﻿using ShoppingListApi.Models.EfCore;
-using ShoppingListApi.Services.AuthService;
 using ShoppingListApi.Services.CategoryService;
 using ShoppingListApi.Services.ListService;
 using ShoppingListApi.Services.ProductService;
@@ -17,8 +16,8 @@ namespace ShoppingListApi.Extensions
             services.AddHttpContextAccessor();
             // Add User Service
             services.AddScoped<IUserService, UserService>();
-            // Add Authentication Service
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            //// Add Authentication Service
+            //services.AddScoped<IAuthenticationService, AuthenticationService>();
             // Add List Service
             services.AddScoped<IListService, ListService>();
             // Add Category Service

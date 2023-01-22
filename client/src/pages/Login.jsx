@@ -1,15 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import loginImage from "../assets/loginImage.jpg";
 import {login} from '../api/axios'
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-
 
 const Login = () => {
   const { setAuth } = useAuth();
 
   const navigate = useNavigate();
-  //const location = useLocation();
   
   const userNameRef = useRef();
   const errRef = useRef();
@@ -31,18 +29,16 @@ const Login = () => {
 
     try {
    
-      const response = await login({userName, password});
-    
-      const accessToken = response?.data?.token;
-      const userId = response?.data?.userId;  // ************** Change maybe? ******************
+      const {data: response} = await login({userName, password});
+  
+      const {token: accessToken, userId, role} = response;
 
-      setAuth({ userName, password, accessToken, userId });
+      setAuth({ userName, password, accessToken, userId, role });
 
       // Clear all inputs
       setUserName("");
       setPassword("");
 
-    //   navigate(from, { replace: true });
       navigate('/');
     } catch (error) {
       error?.request?.status === 0

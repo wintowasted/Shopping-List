@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ShoppingListApi.Models.EfCore;
 
@@ -17,7 +18,12 @@ public partial class User
 
     public string UserRole { get; set; } = null!;
 
+    [JsonIgnore]
     public string? AccessToken { get; set; }
+
+    public string RefreshToken { get; set; } = string.Empty;
+    public DateTime TokenCreated { get; set; }
+    public DateTime TokenExpires { get; set; }
 
     public virtual ICollection<List> Lists { get; } = new List<List>();
 }

@@ -3,15 +3,18 @@ import axios from 'axios'
 const BASE_URL = 'http://localhost:5269/api'
 
 const API  = axios.create({
-    baseURL:  BASE_URL
+    baseURL:  BASE_URL,
+    withCredentials: true
 })
 
 export const privateAPI = axios.create({
-    baseURL: BASE_URL
+    baseURL: BASE_URL,
+    withCredentials: true
 })
 
 export const login = (formData) =>  API.post("/auth/login", formData);
 export const register = (formData) =>  API.post("/auth/register", formData);
+export const refreshToken = () => privateAPI.get("/auth/refresh");
 
 export const getLists = (id) =>  privateAPI.get(`/lists/${id}`);
 export const addList = (listData) =>  privateAPI.post("/lists", {listName: listData});

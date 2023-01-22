@@ -6,5 +6,6 @@
         public bool Result { get; set; }
         public List<string> Errors { get; set; }
         public int UserId { get; set; }
+        public string Role { get; set; }
     }
 }

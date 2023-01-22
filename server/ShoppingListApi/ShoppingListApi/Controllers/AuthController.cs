@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingListApi.Models.DTOs;
 using ShoppingListApi.Models.EfCore;
-using ShoppingListApi.Services.AuthService;
 using ShoppingListApi.Services.UserService;
 
 namespace ShoppingListApi.Controllers
@@ -12,19 +12,17 @@ namespace ShoppingListApi.Controllers
     public class AuthController : ControllerBase
     {
 
-        private readonly IAuthenticationService _authService;
         private readonly IUserService _userService;
 
-        public AuthController(IAuthenticationService authService, IUserService userService)
+        public AuthController(IUserService userService)
         {
-            _authService = authService;
             _userService = userService;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserRegisterDto request)
         {
-            _authService.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            _userService.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
             var exist_email = await _userService.FirstOrDefaultAsync(u => u.Email == request.Email);
             var exist_userName = await _userService.FirstOrDefaultAsync(u => u.UserName == request.UserName);
 
@@ -58,8 +56,8 @@ namespace ShoppingListApi.Controllers
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 UserRole = "User",
-
             };
+
             await _userService.AddAsync(user);
             return Ok(user);
         }
@@ -81,7 +79,7 @@ namespace ShoppingListApi.Controllers
                 });
 
             }
-            if (!(_authService.VerifyPassword(request.Password, exist_user.PasswordHash, exist_user.PasswordSalt)))
+            if (!(_userService.VerifyPassword(request.Password, exist_user.PasswordHash, exist_user.PasswordSalt)))
             {
                 return BadRequest(new AuthResult()
                 {
@@ -92,12 +90,53 @@ namespace ShoppingListApi.Controllers
                     Result = false
                 });
             }
-            string token = _authService.CreateToken(exist_user);
+
+            string token = _userService.CreateToken(exist_user);
+            var refreshToken = _userService.GenerateRefreshToken();
+            await _userService.SetRefreshToken(refreshToken, exist_user);
+
             return Ok(new AuthResult()
             {
                 UserId = exist_user.UserId,
                 Result = true,
-                Token = token
+                Token = token,
+                Role = exist_user.UserRole
+            });
+
+        }
+
+        [HttpGet("refresh")]
+        public async Task<IActionResult> RefreshToken()
+        {
+
+            //var refreshToken = _userService.GetRefreshToken();
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (refreshToken == null)
+            {
+                return Unauthorized("Please login first.");
+            }
+
+            var user = await _userService.FirstOrDefaultAsync(u => u.RefreshToken.Equals(refreshToken));
+
+            if (!user.RefreshToken.Equals(refreshToken))
+            {
+                return Unauthorized("Invalid Refresh Token...");
+            }
+            else if (user.TokenExpires < DateTime.Now)
+            {
+                return Unauthorized("Token is expired.");
+            }
+
+            string newAccessToken = _userService.CreateToken(user);
+            var newRefreshToken = _userService.GenerateRefreshToken();
+            await _userService.SetRefreshToken(newRefreshToken, user);
+
+            return Ok(new AuthResult()
+            {
+                UserId = user.UserId,
+                Result = true,
+                Token = newAccessToken,
+                Role = user.UserRole
             });
 
         }

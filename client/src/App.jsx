@@ -7,6 +7,8 @@ import Register from "./pages/Register";
 import Layout from "./pages/Layout";
 import RequireAuth from "./components/RequireAuth";
 import Products from "./pages/Products";
+import NotFound from "./pages/NotFound";
+import PersistLogin from "./components/PersistLogin";
 
 
 function App() {
@@ -21,15 +23,21 @@ function App() {
         <Route element={<Layout />}>
 
             {/* Protected routes */}
-            <Route element={<RequireAuth />}>
+          <Route element={<PersistLogin/>}>
+            <Route element={<RequireAuth allowedRoles={["User", "Admin"]}/>}>
               <Route path="/" element={<Navigate to={"/lists"} />} />
               <Route path="lists" element={<Home />} />
               <Route path="lists/:id" element={<ListDetail />}></Route>
+             
+            </Route>
+            <Route element={<RequireAuth allowedRoles={["Admin"]}/>}>
               <Route path="products" element={<Products/>}></Route>
             </Route>
-          {/* 404 Not Found pages */}
-          <Route path="*" element={<Error />}></Route>
+       
+          </Route>
         </Route>
+        {/* 404 Not Found pages */}
+        <Route path="*" element={<NotFound />}></Route>
       </Routes>
     </>
   );
