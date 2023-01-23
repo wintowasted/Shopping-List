@@ -1,12 +1,16 @@
 import React from "react";
 import { IoIosAddCircle } from "react-icons/io";
 
-const ProductsMenu = ({  products, addProductToList}) => {
+const ProductsMenu = ({  products, addProductToList, search}) => {
 
 
   return (
-    <div className="overflow-y-scroll max-h-[500px] ">
-      {products.map((product) => {
+    <div className="overflow-y-scroll mt-2 max-h-[500px] ">
+       <hr />
+      {products.filter(p => {
+        return search === "" ? p : p.productName.toLowerCase().includes(search)
+      })
+      .map((product) => {
         return (
           <div key={product.productId}>
        
@@ -14,15 +18,6 @@ const ProductsMenu = ({  products, addProductToList}) => {
               className={product.isSelected ? "flex justify-between items-center h-[60px] rounded-md bg-gradient-to-r from-[#005aa7]/30 to-[#fffde4]/80 px-8 focusDiv" : "flex justify-between items-center h-[60px] hover:bg-black/20 px-8"}
               onClick={() => {
                 addProductToList(product)
-                console.log(product)
-                // const newProducts = products.map(p => {
-                //   if(p.productId == product.productId){
-                //      return {...p, quantity: quantity + 1}
-                //   }
-                    
-                //   return p
-                // })
-                // setProducts(newProducts)
               }}
             >
               <div className="flex items-center gap-x-3 text-xl ">

@@ -1,5 +1,6 @@
 import React from "react";
 import { IoMdTrash } from "react-icons/io";
+import {AiFillLock} from "react-icons/ai"
 import { useNavigate  } from "react-router-dom";
 import addButton from '../assets/addListbutton.svg'
 
@@ -10,7 +11,6 @@ function Lists({ lists, setCreateList, handleDeleteList }) {
     setCreateList(prev => !prev)
   }
 
-  
   return (
     <div className="w-full self-start mt-16 pb-16 grid gap-y-8 ">
       {lists.map((list) => {
@@ -18,8 +18,16 @@ function Lists({ lists, setCreateList, handleDeleteList }) {
           <div className="bg-white border-2 shadow-lg w-[70%]  mx-auto p-4 rounded pb-8 hover:shadow-2xl cursor-pointer" key={list.listId} onClick={() => {navigate(`${list.listId}`,{state:{list}})} }>
             <div className="flex justify-between items-center">
               <span className="text-xl font-semibold">{list.listName}</span>
+              <div className="flex gap-x-4">
+              {list.isLocked && (
+                <div>
+                <AiFillLock className="cursor-pointer text-xl text-green-600" />
+              </div>
+              )}
               <div className="rounded-2xl hover:text-red-600/80" onClick={(e) => handleDeleteList(e, list.listId)}>
                 <IoMdTrash className="cursor-pointer text-xl" />
+              </div>
+              
               </div>
             </div>
             <div className="border-b-2 border-b-black/10 mt-3"/>

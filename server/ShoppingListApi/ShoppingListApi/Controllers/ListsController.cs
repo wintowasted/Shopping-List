@@ -107,19 +107,6 @@ namespace ShoppingListApi.Controllers
                 });
             }
 
-            //var user = await _userService.GetByIdAsync(requestUserId);
-            //if (user == null)
-            //{
-            //    return BadRequest(new AuthResult()
-            //    {
-            //        Result = false,
-            //        Errors = new List<string>()
-            //        {
-            //            "You are not authorized. Please login first!"
-            //        }
-            //    });
-            //}
-
             var lists = await _listService.GetAllAsync(l => l.UserId == userId, include: l => l.Include(l => l.ListsProducts));
            
             return Ok(lists);
@@ -207,6 +194,18 @@ namespace ShoppingListApi.Controllers
                 });
             }
 
+            if (exist_list.IsLocked)
+            {
+                return BadRequest(new AuthResult()
+                {
+                    Result = false,
+                    Errors = new List<string>()
+                    {
+                        "List is locked!"
+                    }
+                });
+            }
+
             var checkProduct = exist_list.ListsProducts.FirstOrDefault(lp => lp.ProductId == productId);
 
             if(checkProduct != null)
@@ -263,6 +262,17 @@ namespace ShoppingListApi.Controllers
                     }
                 });
             }
+            if (exist_list.IsLocked)
+            {
+                return BadRequest(new AuthResult()
+                {
+                    Result = false,
+                    Errors = new List<string>()
+                    {
+                        "List is locked!"
+                    }
+                });
+            }
 
             var checkProduct = exist_list.ListsProducts.FirstOrDefault(lp => lp.ProductId == productId);
             if(checkProduct == null)
@@ -295,6 +305,18 @@ namespace ShoppingListApi.Controllers
                     Errors = new List<string>()
                     {
                         "List is not found!"
+                    }
+                });
+            }
+
+            if (exist_list.IsLocked)
+            {
+                return BadRequest(new AuthResult()
+                {
+                    Result = false,
+                    Errors = new List<string>()
+                    {
+                        "List is locked!"
                     }
                 });
             }
@@ -350,6 +372,18 @@ namespace ShoppingListApi.Controllers
                     Errors = new List<string>()
                     {
                         "List is not found!"
+                    }
+                });
+            }
+
+            if (!exist_list.IsLocked)
+            {
+                return BadRequest(new AuthResult()
+                {
+                    Result = false,
+                    Errors = new List<string>()
+                    {
+                        "List needs to be locked first!"
                     }
                 });
             }

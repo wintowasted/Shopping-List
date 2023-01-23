@@ -5,9 +5,10 @@ import useAuth from "../hooks/useAuth";
 import {getLists, deleteList} from "../api/axios";
 import useLists from "../hooks/useLists";
 import CreateNewList from "../components/CreateNewList";
+import usePrivateApi from "../hooks/usePrivateApi";
 
 const Home = () => {
-
+  usePrivateApi()
   const {auth} = useAuth()
   const {lists, setLists} = useLists()
 

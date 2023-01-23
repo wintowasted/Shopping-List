@@ -10,6 +10,7 @@ import { deleteProduct } from '../api/axios';
 const ProductList = ({filterProducts, products, setProducts, setAddProductModal, setFilterProducts}) => {
   const [editProductModal, setEditProductModal] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState({})
+  const [search, setSearch] = useState("")
 
   const deleteProductHandler = async (e,id) => {
     e.stopPropagation()
@@ -28,22 +29,19 @@ const ProductList = ({filterProducts, products, setProducts, setAddProductModal,
     setEditProductModal(true)
   }
 
-  const handleSearchChange = (e) => {
-    if(!e.target.value) return setFilterProducts(products)
-    const resultProducts = products.filter(p => p.productName.toLowerCase().includes(e.target.value))
-    setFilterProducts(resultProducts)
-  }
   
   return (
     <>
     <div className="w-[600px] ">
         <h2 className="text-[#5d3ebc]">Products</h2>
-        <input type="text" placeholder='Search...' className='rounded-xl py-2  pl-7 bg-search bg-no-repeat bg-left bg-sm focus:outline-none border-2 ' onChange={handleSearchChange}/> 
+        <input type="text" placeholder='Search...' className='rounded-xl py-2  pl-7 bg-search bg-no-repeat bg-left bg-sm focus:outline-none border-2 ' onChange={(e) => setSearch(e.target.value)}/> 
         <div className="relative grid grid-cols-5 mt-3 gap-x-2 gap-y-3 border-2">
           <div className=" cursor-pointer h-[30px] absolute right-0 top-0 translate-x-[50%] translate-y-[-50%] " onClick={() => setAddProductModal(true)}>
             <img className="h-full" src={addButton} alt="add" />
           </div>
-          {filterProducts?.map((product) => {
+          {filterProducts.filter(p => {
+            return search === "" ? p : p.productName.toLowerCase().includes(search)
+          }).map((product) => {
             return (
               <div
                 className="w-[100px] h-[100px]  flex flex-col  justify-between py-1 bg-white items-center hover:bg-[rgba(93,62,188,0.12)] rounded-lg shadow-md cursor-pointer group"

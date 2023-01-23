@@ -109,8 +109,8 @@ namespace ShoppingListApi.Controllers
         public async Task<IActionResult> RefreshToken()
         {
 
-            //var refreshToken = _userService.GetRefreshToken();
-            var refreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = _userService.GetRefreshToken();
+    
             if (refreshToken == null)
             {
                 return Unauthorized("Please login first.");

@@ -7,7 +7,6 @@ import './index.css'
 import { ListProvider } from "./context/ListProvider";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <ListProvider>
@@ -17,5 +16,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </ListProvider>
       </AuthProvider>
     </BrowserRouter>
-  </React.StrictMode>
 )

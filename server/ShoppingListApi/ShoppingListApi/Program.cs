@@ -23,7 +23,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Adding fluent validation
-//builder.Services.AddFluentValidation(v => v.RegisterValidatorsFromAssemblyContaining<UserRegisterDtoValidator>());
 builder.Services.AddFluentValidationAutoValidation()
     .AddValidatorsFromAssemblyContaining<UserRegisterDtoValidator>();
 
